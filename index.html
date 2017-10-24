@@ -10,13 +10,15 @@
 /* 
 
 Brutforce w CVE-2007-0038 to mit chyba ze wyeliminujemy 
-wszystkie lokalizacje ktore prowadza do niekontynuowalnych wyjatk�w 
-a to bylo by trudne zwazywszy ze ich adresy sa losowe :) lub sprawimy �e wyj�tki b�d� kontynuowalne :D
-Chcialem to zrobic bez timer�w z wykorzystaniem postMessage ale w
+wszystkie lokalizacje ktore prowadza do niekontynuowalnych wyjatków 
+a to bylo by trudne zwazywszy ze ich adresy sa losowe :) lub sprawimy ¿e wyj¹tki bêd¹ kontynuowalne :D
+Ściślej mówiąc chodzi o to że czasami na przykład trafiamy w funkcje które ustawiają własne procedury obsługi wyjątków,
+następnie dochodzi do błędów związanych z kontekstem wykonania które dla danej procedury są niekontynuowalne 
+Chcialem to zrobic bez timerów z wykorzystaniem postMessage ale w
 tym IE nie ma postMessage lol xD xD
 
-Nied�ugo napisze cos wiecej o tym jak wkoncu wexploitowalem ten blad 
-omijajac ASLR i DEP (kt�rego nie ma), ile bylo podejsc i dlaczego tak a nie inaczej 
+Nied³ugo napisze cos wiecej o tym jak wkoncu wexploitowalem ten blad 
+omijajac ASLR i DEP (którego nie ma), ile bylo podejsc i dlaczego tak a nie inaczej 
 ... etc
 
 //7638 32DF > 8BFF             MOV EDI,EDI   -- WinExec 1
